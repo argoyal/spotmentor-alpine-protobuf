@@ -1,0 +1,18 @@
+FROM python:3.6-alpine3.8
+
+RUN apk add -u git build-base autoconf automake libtool
+
+RUN git clone https://github.com/google/protobuf
+
+WORKDIR ./protobuf
+
+RUN ./autogen.sh && ./configure --prefix=/usr && \
+    make -j 4 && make check && make install
+
+WORKDIR /
+
+RUN rm -rf ./protobuf
+
+RUN apk del git build-base autoconf automake libtool
+
+RUN apk add -u libstdc++
